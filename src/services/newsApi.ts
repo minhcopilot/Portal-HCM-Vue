@@ -5,7 +5,7 @@ const getNews = async () => {
     return news.data[0]
 }
 const getLeaders = async () => {
-    const leadership = await axiosInstance.get('/leaders1')
+    const leadership = await axiosInstance.get('/leaders')
     return leadership.data[0]
 }
 export const newsApi = { getNews, getLeaders }
