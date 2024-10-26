@@ -11,13 +11,14 @@ export const useLeadersStore = defineStore('leaders', () => {
         description: ''
     })
     const viceChairpersons = ref<ViceChairpersons[]>([])
-    const error = ref<string>('')
+    const error = ref<string | null>(null)
     const fetchLeaders = async () => {
         try {
             const leaders = await newsApi.getLeaders()
             chairperson.value = leaders.chairperson
             viceChairpersons.value = leaders.viceChairpersons
-
+            error.value = null
+            return { success: true }
         } catch (error: any) {
             error.value = 'Có lỗi xảy ra, vui lòng thử lại sau!'
             return { success: false, message: error.value }

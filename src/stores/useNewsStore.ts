@@ -14,6 +14,8 @@ export const useNewsStore = defineStore('news', () => {
             const news = await newsApi.getNews()
             categories.value = news.categories
             newsContent.value = news.newsContent
+            error.value = null
+            return { success: true }
         } catch (error: any) {
             error.value = 'Có lỗi xảy ra, vui lòng thử lại sau!'
             return { success: false, message: error.value }
@@ -29,6 +31,8 @@ export const useMultimediaStore = defineStore('multimedia', () => {
         try {
             const multimedia = await newsApi.getNews()
             multimediaContent.value = multimedia.multimediaData
+            error.value = null
+            return { success: true }
         } catch (error: any) {
             error.value = 'Có lỗi xảy ra, vui lòng thử lại sau!'
             return { success: false, message: error.value }

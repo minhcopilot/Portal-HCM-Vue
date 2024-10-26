@@ -87,7 +87,7 @@ const languages = ref([
 ]);
 
 // Language change handler
-const changeLanguage = (lang) => {
+const changeLanguage = (lang: { display: string }) => {
   selectedLanguage.value = lang.display;
 };
 </script>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useMultimediaStore } from "../../../stores/useNewsStore";
-import CustomSnackbar from "../../common/CustomSnackbar.vue";
+import CustomSnackbar from "@/components/common/CustomSnackbar.vue";
 import MultimediaTab from "./MultimediaTab.vue";
 import MultimediaContent from "./MultimediaContent.vue";
 import Sidebar from "../../../components/common/Sidebar.vue";
@@ -11,14 +11,18 @@ const multimediaData = computed(() => multimediaStore.multimediaContent);
 const isLoading = ref(true);
 const snackbarRef = ref<InstanceType<any> | null>(null);
 const activeTab = ref("");
-
+const error = ref<string | null>(null);
 onMounted(async () => {
   try {
     isLoading.value = true;
-    await multimediaStore.fetchMultimedia();
+    const result = await multimediaStore.fetchMultimedia();
+    if (!result?.success) {
+      throw new Error(result?.message);
+    }
     activeTab.value = multimediaData.value[0]?.id || "";
-  } catch (error) {
-    showSnackbar("Error fetching multimedia data", false);
+  } catch (err: any) {
+    error.value = err.message || "Có lỗi xảy ra khi tải dữ liệu multimedia";
+    showSnackbar(error.value || "", false);
   } finally {
     isLoading.value = false;
   }

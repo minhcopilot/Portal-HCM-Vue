@@ -3,13 +3,13 @@ import { ref, onMounted, computed } from "vue";
 import { useNewsStore } from "@/stores/useNewsStore";
 import NewsItem from "./NewsItem.vue";
 import NewsSkeletonLoader from "./NewsSkeleton.vue";
-import CustomSnackbar from "@/components/common/CustomSnackbar.vue";
+import CustomSnackbar from "../../../components/common/CustomSnackbar.vue";
 
 const newsStore = useNewsStore();
 const isLoading = ref(true);
 const activeCategory = ref<string>("");
 const snackbarRef = ref<InstanceType<typeof CustomSnackbar> | null>(null);
-
+const error = ref<string | null>(null);
 const categories = computed(() => newsStore.categories);
 const newsContent = computed(() => newsStore.newsContent);
 
@@ -25,10 +25,14 @@ const setActiveCategory = (categoryId: string) => {
 onMounted(async () => {
   try {
     isLoading.value = true;
-    await newsStore.fetchNews();
+    const result = await newsStore.fetchNews();
+    if (!result?.success) {
+      throw new Error(result?.message);
+    }
     activeCategory.value = categories.value[0]?.id || "";
-  } catch (error) {
-    showSnackbar("Error fetching news", false);
+  } catch (err: any) {
+    error.value = err.message || "Có lỗi xảy ra khi tải tin tức";
+    showSnackbar(error?.value || "", false);
   } finally {
     isLoading.value = false;
   }

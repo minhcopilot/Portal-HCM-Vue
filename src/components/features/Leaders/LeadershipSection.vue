@@ -19,9 +19,13 @@ const snackbarRef = ref<InstanceType<typeof CustomSnackbar> | null>(null);
 onMounted(async () => {
   try {
     isLoading.value = true;
-    await leadersStore.fetchLeaders();
-  } catch (error) {
-    showSnackbar("Error fetching news", false);
+    const result = await leadersStore.fetchLeaders();
+    if (!result?.success) {
+      throw new Error(result?.message);
+    }
+  } catch (err: any) {
+    error.value = err.message || "Có lỗi xảy ra khi tải dữ liệu lãnh đạo";
+    showSnackbar(error.value || "", false);
   } finally {
     isLoading.value = false;
   }
@@ -35,15 +39,8 @@ const showSnackbar = (message: string, success: boolean) => {
 <template>
   <div class="leadership-section text-center">
     <LeadersSkeleton v-if="isLoading" />
-    <template v-else-if="error">
-      <div class="alert alert-danger" role="alert">
-        {{ error }}
-      </div>
-    </template>
-    <template v-else>
       <ChairpersonSection :chairperson="chairperson" />
       <ViceChairpersonSection :vice-chairpersons="viceChairpersons" />
-    </template>
     <CustomSnackbar ref="snackbarRef" />
   </div>
 </template>

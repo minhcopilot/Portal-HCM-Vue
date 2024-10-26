@@ -9,21 +9,23 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   data() {
     return {
       show: false,
       message: "",
-      color: "error",
+      color: "error" as "error" | "success" | "info" | "warning",
     };
   },
   methods: {
-    showSnackbar(message, color = "error") {
+    showSnackbar(message: string, color: "error" | "success" | "info" | "warning" = "error"): void {
       this.message = message;
       this.color = color;
       this.show = true;
     },
   },
-};
+});
 </script>
